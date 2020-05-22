@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 channelsToCheck = []
 #NEED TO FIX THIS WITH A BETTER ENV FILE!!
-TOKEN = ""
+TOKEN = "NzEzNDQwMzMxODY5MzIzMjc0.XshM-w.V3YRYNwS0I1-u0HRGbekqjqILDY"
 client = discord.Client()
 
 @client.event
@@ -38,6 +38,15 @@ async def on_voice_state_update(member,before,after):
         #If that count is equal (or higher) than the user cap, create another channel.
         if channelWasEmpty == True and memberCount == 1:
             await member.guild.create_voice_channel(after.channel.name + "+",category=after.channel.category,user_limit=after.channel.user_limit) 
-
+        if "+" in after.channel.name and memberCount == 0:
+            mainChannelMembers = 0
+            mainChannelString = (after.channel.name).replace('+','')
+            print(mainChannelString)
+            mainChannel = discord.utils.find(lambda c: c.name == mainChannelString, after.channel.guild.voice_channels)
+            for b in mainChannel.members:
+                mainChannelMembers = mainChannelMembers + 1
+                print(mainChannelMembers)
+            if mainChannelMembers == 0:
+                await after.channel.delete()
 
 client.run(TOKEN)
