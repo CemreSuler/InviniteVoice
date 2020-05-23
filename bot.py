@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 channelsToDelete = []
 
 #NEED TO FIX THIS WITH A BETTER ENV FILE!!
-TOKEN = "NzEzNDQwMzMxODY5MzIzMjc0.XshM-w.V3YRYNwS0I1-u0HRGbekqjqILDY"
+TOKEN = "NzEzNDQwMzMxODY5MzIzMjc0.XsmByQ.P8sIxr2EyCB7jAl1SZZ0oTSi0yk"
 client = discord.Client()
 
 @client.event
@@ -24,14 +24,11 @@ async def on_message(message):
 
 @client.event
 async def on_voice_state_update(member,before,after):
-    overwrites = {
-        member.guild.get_role(713839595661295677): discord.PermissionOverwrite(connect=False)
-    }
     if before.deaf == after.deaf and before.mute == after.mute and before.self_mute == after.self_mute and before.self_deaf == after.self_deaf and before.self_stream == after.self_stream and before.self_video == after.self_video and before.afk == after.afk:
         try:
-            if len(after.channel.members) == 1:
-                await member.guild.create_voice_channel(after.channel.name,category=after.channel.category,user_limit=after.channel.user_limit,position=after.channel.position, overwrites=overwrites)
-                await after.channel.edit(name=(after.channel.name).replace('Create New ',''), overwrites=None)
+            if len(after.channel.members) == 1 and after.channel.name != "Staff" and after.channel.name != "General" and after.channel.name != "Event":
+                await member.guild.create_voice_channel(after.channel.name,category=after.channel.category,user_limit=after.channel.user_limit,position=after.channel.position)
+                await after.channel.edit(name=(after.channel.name).replace('Create New ',''))
                 channelsToDelete.append(after.channel.id)
         except:
             if (before.channel.id in channelsToDelete) and len(before.channel.members) == 0:
